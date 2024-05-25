@@ -9,6 +9,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -17,6 +18,8 @@ import (
 	stamps "github.com/jedisct1/go-dnsstamps"
 	"github.com/miekg/dns"
 	"golang.org/x/crypto/curve25519"
+
+	"github.com/korovkin/limiter"
 )
 
 type Proxy struct {
@@ -56,6 +59,9 @@ type Proxy struct {
 	allowedIPLogFile              string
 	queryLogFormat                string
 	blockIPFile                   string
+	whitelistNameFormat            string
+	whitelistNameLogFile           string
+	whitelistNameFile              string
 	allowNameFile                 string
 	allowNameFormat               string
 	allowNameLogFile              string
@@ -103,6 +109,15 @@ type Proxy struct {
 	SourceDNSCrypt                bool
 	SourceDoH                     bool
 	SourceODoH                    bool
+
+	iosMode       bool
+	retryCount    int
+	maxWorkers    int
+	workerPool    *limiter.ConcurrencyLimiter
+	quitListeners chan bool
+	wgQuit        sync.WaitGroup
+
+
 }
 
 func (proxy *Proxy) registerUDPListener(conn *net.UDPConn) {

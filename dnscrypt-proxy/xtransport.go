@@ -63,6 +63,7 @@ type XTransport struct {
 	altSupport               AltSupport
 	internalResolvers        []string
 	bootstrapResolvers       []string
+	fallbackResolvers        []string
 	mainProto                string
 	ignoreSystemDNS          bool
 	internalResolverReady    bool

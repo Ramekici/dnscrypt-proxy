@@ -38,7 +38,7 @@ type Config struct {
 	LocalDoH                 LocalDoHConfig `toml:"local_doh"`
 	UserName                 string         `toml:"user_name"`
 	ForceTCP                 bool           `toml:"force_tcp"`
-	HTTP3                    bool           `toml:"http3"`
+	// HTTP3                    bool           `toml:"http3"`
 	Timeout                  int            `toml:"timeout"`
 	KeepAlive                int            `toml:"keepalive"`
 	Proxy                    string         `toml:"proxy"`
@@ -96,6 +96,9 @@ type Config struct {
 	TLSKeyLogFile            string                      `toml:"tls_key_log_file"`
 	NetprobeAddress          string                      `toml:"netprobe_address"`
 	NetprobeTimeout          int                         `toml:"netprobe_timeout"`
+	MaxWorkers               int                         `toml:"max_workers,omitempty" json:"max_workers,omitempty"`
+	RetryCount               int                         `toml:"retry_count,omitempty" json:"retry_count,omitempty"`
+	IOSMode                  bool                        `toml:"ios_mode,omitempty" json:"ios_mode,omitempty"`
 	OfflineMode              bool                        `toml:"offline_mode"`
 	HTTPProxyURL             string                      `toml:"http_proxy"`
 	RefusedCodeInResponses   bool                        `toml:"refused_code_in_responses"`
@@ -119,7 +122,7 @@ func newConfig() Config {
 		KeepAlive:                5,
 		CertRefreshConcurrency:   10,
 		CertRefreshDelay:         240,
-		HTTP3:                    false,
+		// HTTP3:                    false,
 		CertIgnoreTimestamp:      false,
 		EphemeralKeys:            false,
 		Cache:                    true,
@@ -162,6 +165,10 @@ func newConfig() Config {
 			DirectCertFallback: true,
 		},
 		CloakedPTR: false,
+		MaxWorkers:               25,
+		RetryCount:               5,
+		IOSMode:                  true,
+
 	}
 }
 
@@ -385,7 +392,7 @@ func ConfigLoad(proxy *Proxy, flags *ConfigFlags) error {
 	proxy.xTransport.tlsDisableSessionTickets = config.TLSDisableSessionTickets
 	proxy.xTransport.tlsCipherSuite = config.TLSCipherSuite
 	proxy.xTransport.mainProto = proxy.mainProto
-	proxy.xTransport.http3 = config.HTTP3
+	// proxy.xTransport.http3 = config.HTTP3
 	if len(config.BootstrapResolvers) == 0 && len(config.BootstrapResolversLegacy) > 0 {
 		dlog.Warnf("fallback_resolvers was renamed to bootstrap_resolvers - Please update your configuration")
 		config.BootstrapResolvers = config.BootstrapResolversLegacy

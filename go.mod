@@ -17,6 +17,7 @@ require (
 	github.com/jedisct1/xsecretbox v0.0.0-20230811132812-b950633f9f1f
 	github.com/k-sone/critbitgo v1.4.0
 	github.com/kardianos/service v1.2.2
+	github.com/korovkin/limiter v0.0.0-20230307205149-3d4b2b34c99d
 	github.com/miekg/dns v1.1.59
 	github.com/opencoff/go-sieve v0.2.1
 	github.com/powerman/check v1.7.0
